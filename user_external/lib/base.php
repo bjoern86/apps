@@ -160,18 +160,18 @@ abstract class Base extends \OC_User_Backend{
 				array($uid, $this->backend)
 			);
 			
-			$uida = explode('@',$uid,2);
-			
-			if (($uida[1] || '') !== '') {
+			$pieces = explode('@',$uid,2);
+
+			if($pieces[1]) {
 				OC_DB::executeAudited(
 					'INSERT IGNORE INTO `*PREFIX*groups` ( `gid` )'
 					. ' VALUES( ? )',
-					array($uida[1])
+					array($pieces[1])
 				);
 				OC_DB::executeAudited(
 					'INSERT INTO `*PREFIX*group_user` ( `gid`, `uid` )'
 					. ' VALUES( ?, ? )',
-					array($uida[1], $uid)
+					array($pieces[1], $uid)
 				);
 			}
 		}
