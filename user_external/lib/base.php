@@ -145,7 +145,7 @@ abstract class Base extends \OC_User_Backend{
 	}
 
 	/**
-	 * Create user record in database
+	 * Create user and group record in database
 	 *
 	 * @param string $uid The username
 	 *
@@ -159,6 +159,21 @@ abstract class Base extends \OC_User_Backend{
 				. ' VALUES( ?, ? )',
 				array($uid, $this->backend)
 			);
+			
+			$uida = explode('@',$uid,2);
+			
+			if (($uida[1] || '') !== '') {
+				OC_DB::executeAudited(
+					'INSERT IGNORE INTO `*PREFIX*groups` ( `gid` )'
+					. ' VALUES( ? )',
+					array($uida[1])
+				);
+				OC_DB::executeAudited(
+					'INSERT INTO `*PREFIX*group_user` ( `gid`, `uid` )'
+					. ' VALUES( ?, ? )',
+					array($uida[1], $uid)
+				);
+			}
 		}
 	}
 
